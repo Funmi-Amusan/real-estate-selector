@@ -4,7 +4,7 @@ import { Gi3dMeeple } from "react-icons/gi";
 import { IoIosMenu } from "react-icons/io";
 const Header = () => {
   return (
-    <div className=' h-16 text-foreground flex justify-between items-center w-full  px-8'>
+    <div className='fixed md:static backdrop-blur-sm h-16 text-foreground flex justify-between items-center w-full  px-8'>
         <Link href={'/'} aria-label='link to homepage' className='flex gap-1 items-center '>
           <Gi3dMeeple className='h-8 w-8' />
           <span className='font-bold text-lg'>

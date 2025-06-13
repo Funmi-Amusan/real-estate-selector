@@ -130,14 +130,14 @@ const LayoutGallery = ({ floor }: { floor: Floor }) => {
             transition={{ delay: 0.1 }}
             className='flex justify-center gap-4 mb-8 flex-wrap'
           >
-            <div className='px-4 py-2 rounded-full bg-background text-foreground text-sm font-medium'>
-              Area: {floor.area} sqft
+            <div className='px-4  py-2 rounded-full text-foreground text-sm font-bold'>
+              Area: <span className='font-medium'>{floor.area} sqft</span>
             </div>
-            <div className='px-4 py-2 rounded-full bg-background text-foreground text-sm font-medium'>
-              Unit Type: {floor.unitType}
+            <div className='px-4 py-2 rounded-full bg-background text-foreground text-sm font-bold'>
+              Unit Type: <span className='font-medium'>{floor.unitType}</span>
             </div>
-            <div className='px-4 py-2 rounded-full bg-background text-foreground text-sm font-medium'>
-              Total Units: {floor.total}
+            <div className='px-4 py-2 rounded-full bg-background text-foreground text-sm font-bold'>
+              Total Units: <span className='font-medium'>{floor.total}</span>
             </div> 
           </motion.div>
           
@@ -156,7 +156,7 @@ const LayoutGallery = ({ floor }: { floor: Floor }) => {
                   className='
                     group                              
                     relative                            
-                    flex-none w-1/3
+                    flex-none w-[90%] md:w-1/3
                     rounded-xl shadow-md
                     cursor-pointer
                     overflow-hidden

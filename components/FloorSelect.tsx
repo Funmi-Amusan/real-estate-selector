@@ -30,7 +30,7 @@ const FloorSelect = ({floors}: {floors: Floor[]}) => {
                 rounded-full       
                 flex items-center justify-center 
                 hover:scale-105 transition-colors duration-100
-                text-sm font-bold   ${+((searchParam.get('floor') ?? '')) === floor.number ? 'bg-transparent border-2 border-foreground' : ' bg-foreground text-white'} `}
+                text-sm font-bold   ${+((searchParam.get('floor') ?? '')) === floor.number ? 'bg-transparent text-foreground border-2 border-foreground' : ' bg-black text-white'} `}
             >
               {floor.number}
             </button>

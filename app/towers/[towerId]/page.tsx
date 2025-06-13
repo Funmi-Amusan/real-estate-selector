@@ -26,7 +26,7 @@ if (!floorGallery) {
 }
 
   return (
-    <div>
+    <section className='pt-4'>
       <div className=' grid grid-cols-1 md:grid-cols-6 gap-4 p-8'>
        <div className=' p-4 col-span-2'>
          <h1 className='text-4xl font-bold'>{tower.name}</h1>
@@ -53,7 +53,7 @@ if (!floorGallery) {
         <Image src={tower?.imgLandscape} alt={tower?.name} width={200} height={150} className=" object-cover col-span-4 rounded-xl w-full h-[60vh] mb-4" />
       </div>
      <LayoutGallery floor={floorGallery} />
-    </div>
+    </section>
   )
 }
 
