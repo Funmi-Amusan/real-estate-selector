@@ -1,7 +1,7 @@
 import { Floor } from "./interfaces"
 
 export const generateFloors = (towerFloors: number): Floor[] => {
-    const unitTypes: Floor["unitType"][] = ["Studio", "1BR", "2BR", "3BR"];
+    const unitTypes: Floor["unitType"][] = ["Studio", "Penthouse", "1 Bedroom", "2 Bedroom", "3 Bedroom"];
     return Array.from({ length: towerFloors }, (_, i) => ({
       id: `floor-${i + 1}`,
       number: i + 1,
@@ -14,25 +14,25 @@ export const generateFloors = (towerFloors: number): Floor[] => {
             id: `gallery-${i + 1}`,
             title: `Floor ${i + 1} Bedroom`,
             description: `Explore the stunning views and modern design of Floor ${i + 1}.`,
-            image: '/greenRoom.jpg'
+            image: '/layout.jpg'
         },
         {
             id: `gallery-${i + 1}`,
             title: `Floor ${i + 1} Living Room`,
             description: `Explore the stunning views and modern design of Floor ${i + 1}.`,
-            image: '/greenRoom.jpg'
+            image: '/layout.jpg'
         },
         {
             id: `gallery-${i + 1}`,
             title: `Floor ${i + 1} Bathroom`,
             description: `Explore the stunning views and modern design of Floor ${i + 1}.`,
-            image: '/greenRoom.jpg'
+            image: '/layout.jpg'
         },
         {
             id: `gallery-${i + 1}`,
             title: `Floor ${i + 1} Kitchen`,
             description: `Explore the stunning views and modern design of Floor ${i + 1}.`,
-            image: '/greenRoom.jpg'
+            image: '/layout.jpg'
         },
       ],
     }));

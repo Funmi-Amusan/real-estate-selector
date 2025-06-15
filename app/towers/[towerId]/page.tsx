@@ -1,9 +1,9 @@
 import { towers } from '@/lib/data'
 import { generateFloors } from '@/lib/helpers'
 import React from 'react'
-import Image from "next/image";
 import LayoutGallery from '@/components/LayoutGallery';
 import FloorSelect from '@/components/FloorSelect';
+import InteractiveBuilding from '@/components/3DModel';
 
 interface PageProps {
   params: { towerId: string };
@@ -50,8 +50,8 @@ if (!floorGallery) {
          <p>{tower?.description}</p>
          <FloorSelect floors={floors} />
        </div>
-        <Image src={tower?.imgLandscape} alt={tower?.name} width={200} height={150} className=" object-cover col-span-4 rounded-xl w-full h-[60vh] mb-4" />
-      </div>
+      <InteractiveBuilding floors={floors} />
+     </div>
      <LayoutGallery floor={floorGallery} />
     </section>
   )

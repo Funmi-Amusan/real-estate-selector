@@ -12,7 +12,7 @@ export interface Tower {
     id: string;
     number: number;
     area: number;
-    unitType: 'Studio' | '1BR' | '2BR' | '3BR' | 'Penthouse';
+    unitType: 'Studio' | '1 Bedroom' | '2 Bedroom' | '3 Bedroom' | 'Penthouse';
     rooms: number;
     gallery: Gallery[];
     total: number

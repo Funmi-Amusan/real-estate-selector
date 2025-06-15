@@ -1,4 +1,4 @@
-import {  Tower } from "./interfaces";
+import { Tower } from "./interfaces";
 
 export const towers: Tower[] = [
     { id: "A", 
