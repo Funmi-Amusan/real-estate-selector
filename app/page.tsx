@@ -20,7 +20,7 @@ export default function Home() {
     alt={tower.name} 
     width={200} 
     height={150} 
-    className="object-cover object-bottom w-full h-[60vh] mb-4 mx-auto transform transition-transform duration-500 ease-in-out hover:scale-105"
+    className="object-cover object-bottom w-full md:h-[60vh] mb-4 mx-auto transform transition-transform duration-500 ease-in-out hover:scale-105"
   />
 </div>
      <p className="flex items-center uppercase font-semibold text-base">{tower.name} </p>

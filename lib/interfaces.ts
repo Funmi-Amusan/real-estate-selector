@@ -6,6 +6,7 @@ export interface Tower {
     img: string
     imgLandscape: string
     location: string
+    gallery: Gallery[]
   }
 
   export interface Floor {

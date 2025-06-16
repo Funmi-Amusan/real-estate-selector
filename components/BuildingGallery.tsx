@@ -6,8 +6,8 @@ import { Gallery } from '@/lib/interfaces';
 import { AnimatePresence, motion } from 'motion/react';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import GalleryModal from './GalleryModal';
-import { useFloorStore } from '@/stores/floor-store';
-import BuildingGallery from './BuildingGallery';
+import { useParams } from 'next/navigation';
+import { towers } from '@/lib/data';
 
 type ActiveImage = {
   src: string;
@@ -17,13 +17,14 @@ type ActiveImage = {
   description: string;
 } | null;
 
-const LayoutGallery = () => {
+const BuildingGallery
+ = () => {
     const [activeImage, setActiveImage] = useState<ActiveImage>(null);
     const id = useId();
     const ref = useRef<HTMLDivElement>(null);
 
-     const {floor} = useFloorStore();
-  
+    const param = useParams()
+    const tower = towers.find((tower) => tower.id === param.towerId)
     useEffect(() => {
       function onKeyDown(event: { key: string; }) {
         if (event.key === "Escape") {
@@ -56,7 +57,7 @@ const LayoutGallery = () => {
     const handlePrevImage = () => {
       if (activeImage) {
         const prevIndex = activeImage.index - 1;
-        const prevImage = floor?.gallery[prevIndex];
+        const prevImage = tower?.gallery[prevIndex];
         if (prevImage) {
           setActiveImage({
             src: prevImage.image,
@@ -72,7 +73,7 @@ const LayoutGallery = () => {
     const handleNextImage = () => {
       if (activeImage) {
         const nextIndex = activeImage.index + 1;
-        const nextImage = floor?.gallery[nextIndex];
+        const nextImage = tower?.gallery[nextIndex];
         if (nextImage) {
           setActiveImage({
             src: nextImage.image,
@@ -85,9 +86,11 @@ const LayoutGallery = () => {
       }
     };
 
-    if (!floor) {
+    if (!tower) {
       return (
-       <BuildingGallery />
+        <div className='p-6'>
+          <p>No floor data available to building gallery.</p>
+        </div>
       );
     }
   
@@ -105,7 +108,7 @@ const LayoutGallery = () => {
       />
       <GalleryModal
         activeImage={activeImage}
-        floorGallery={floor.gallery}
+        floorGallery={tower.gallery}
         onClose={() => setActiveImage(null)}
         onNext={handleNextImage}
         onPrev={handlePrevImage}
@@ -121,25 +124,8 @@ const LayoutGallery = () => {
             animate={{ opacity: 1, y: 0 }}
             className='text-3xl font-bold mb-6 text-center uppercase text-gray-800'
           >
-            Floor {floor.number}
+           {tower.name}
           </motion.h2>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className='flex justify-center gap-4 mb-8 flex-wrap'
-          >
-            <div className='px-4  py-2 rounded-full text-foreground text-sm font-bold'>
-              Area: <span className='font-medium'>{floor.area} sqft</span>
-            </div>
-            <div className='px-4 py-2 rounded-full bg-background text-foreground text-sm font-bold'>
-              Unit Type: <span className='font-medium'>{floor.unitType}</span>
-            </div>
-            <div className='px-4 py-2 rounded-full bg-background text-foreground text-sm font-bold'>
-              Total Units: <span className='font-medium'>{floor.total}</span>
-            </div> 
-          </motion.div>
           
           <motion.div
             initial={{ opacity: 0 }}
@@ -149,7 +135,7 @@ const LayoutGallery = () => {
           >
             <h3 className="text-lg font-semibold text-gray-700 mb-4"> Gallery</h3>
             <div className='flex overflow-x-auto gap-6 pb-4 hide-scrollbar'>
-              {floor.gallery.map((item, index) => (
+              {tower.gallery.map((item, index) => (
                 <motion.div
                   layoutId={`image-${index}-${id}`}
                   key={index}
@@ -169,7 +155,7 @@ const LayoutGallery = () => {
                 >
                   <Image
                     src={item.image}
-                    alt={`Floor ${floor.number} - Image ${index + 1}`}
+                    alt={`Floor ${tower.name} - Image ${index + 1}`}
                     width={320}
                     height={240}
                     className="
@@ -203,5 +189,5 @@ const LayoutGallery = () => {
       </div>
     );
   };
-
-export default LayoutGallery;
+export default BuildingGallery
+;
