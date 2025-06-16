@@ -6,12 +6,12 @@ import FloorSelect from '@/components/FloorSelect';
 import InteractiveBuilding from '@/components/3DModel';
 
 interface PageProps {
-  params: { towerId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ towerId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const page = ({ params }: PageProps) => {
-  const tower = towers.find((t) => t.id === params.towerId)
+  const tower = towers.find(async (t) => t.id === (await params).towerId)
   if (!tower) {
     return <div>Tower not found</div>
   }
