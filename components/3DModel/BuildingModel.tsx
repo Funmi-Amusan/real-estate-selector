@@ -26,7 +26,7 @@ const BuildingModel = ({
   
     const floorHeight = 3.5
     const numFloors = 15
-    const buildingWidth = 25
+    const buildingWidth = 35
     const buildingDepth = 24
     const baseHeight = 7.0
     const baseWidth = buildingWidth + 0.5
@@ -118,7 +118,7 @@ const BuildingModel = ({
           {/* Main Floors */}
           {Array.from({ length: numFloors }, (_, i) => {
             const yPos = baseHeight + i * floorHeight
-            const floorIndex = i + 2 // Offset by 2 (ground + mezzanine)
+            const floorIndex = i + 1 // Offset by 2 (ground + mezzanine)
     
             return (
               <FloorUnit

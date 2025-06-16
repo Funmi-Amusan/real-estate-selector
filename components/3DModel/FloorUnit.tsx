@@ -102,7 +102,7 @@ const FloorUnit = ({
       {isHovered && (
         <Html position={[35, 0, 0]} center>
           <div className="bg-black/80 text-white px-3 py-1 rounded-lg text-sm whitespace-nowrap font-medium pointer-events-none">
-            {`Floor ${floorIndex + 1}`}
+            {`Floor ${floorIndex }`}
           </div>
         </Html>
       )}

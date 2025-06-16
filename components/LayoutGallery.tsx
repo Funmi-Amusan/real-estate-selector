@@ -113,8 +113,6 @@ const LayoutGallery = ({ floor }: { floor: Floor }) => {
     </>
   )}
 </AnimatePresence>
-
-
         <div className='p-6'>
           <motion.h2 
             initial={{ opacity: 0, y: -20 }}
@@ -178,7 +176,6 @@ const LayoutGallery = ({ floor }: { floor: Floor }) => {
                       group-hover:scale-110                       
                     "
                   />
-                  
                   <div className="
                     absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent
                     opacity-0 group-hover:opacity-100

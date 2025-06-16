@@ -7,13 +7,20 @@ import LoadingScreen from "./LoadingScreen"
 import Scene from "./Scene"
 import FloorModal from './FloorModal'
 import { Floor } from "@/lib/interfaces"
+import { useRouter } from "next/navigation"
 
 export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
+
+    const router = useRouter()
+
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null)
   const [hoveredFloor, setHoveredFloor] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
 
   const handleFloorClick = (floorIndex: number) => {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+        const newUrl = `${currentPath}?floor=${floorIndex}`;
+        router.push(newUrl);
     setSelectedFloor(floorIndex)
     setShowModal(true)
   }
