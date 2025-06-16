@@ -1,26 +1,43 @@
 "use client"
 
 import { Canvas } from "@react-three/fiber"
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import * as THREE from "three"
 import LoadingScreen from "./LoadingScreen"
 import Scene from "./Scene"
 import FloorModal from './FloorModal'
 import { Floor } from "@/lib/interfaces"
 import { useRouter } from "next/navigation"
+import { useFloorStore } from "@/stores/floor-store"
 
 export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
 
     const router = useRouter()
+     const {update, floor} = useFloorStore();
 
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null)
   const [hoveredFloor, setHoveredFloor] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
 
+  useEffect(() => {
+    if (floor) {
+        const floorIndex = floors.findIndex(f => f.number === floor.number);
+        if (floorIndex !== -1) {
+            setSelectedFloor(floor.number);
+            setShowModal(true);
+        }
+    } else {
+        setSelectedFloor(null);
+        setShowModal(false);
+    }
+}, [floor, floors]);
+
   const handleFloorClick = (floorIndex: number) => {
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
         const newUrl = `${currentPath}?floor=${floorIndex}`;
         router.push(newUrl);
+        const floorData = floors[floorIndex-1]
+        update(floorData)
     setSelectedFloor(floorIndex)
     setShowModal(true)
   }

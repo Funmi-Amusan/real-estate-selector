@@ -1,21 +1,126 @@
+'use client'
+
 import Image from 'next/image';
-import { Floor } from "@/lib/interfaces";
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useFloorStore } from '@/stores/floor-store';
+import { useEffect, useId, useRef, useState } from 'react';
+import { Gallery } from '@/lib/interfaces';
+import { useOutsideClick } from '@/hooks/useOutsideClick';
+import GalleryModal from '../GalleryModal';
 
+type ActiveImage = {
+  src: string;
+  alt: string;
+  index: number;
+  title: string;
+  description: string;
+} | null;
 
-const FloorModal = ({ floor, onClose }: { floor: Floor | null; onClose: () => void }) => {
+const FloorModal = ({ onClose }: {  onClose: () => void }) => {
 
-    console.log('floor', floor)
+  const [activeImage, setActiveImage] = useState<ActiveImage>(null);
+  const id = useId();
+  const ref = useRef<HTMLDivElement>(null);
+  
+  const { floor } = useFloorStore();
 
-    if (!floor) return null
+  useEffect(() => {
+    function onKeyDown(event: { key: string; }) {
+      if (event.key === "Escape") {
+        if (activeImage) {
+          setActiveImage(null);
+        } else {
+          onClose();
+        }
+      }
+    }
+
+    if (activeImage) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [activeImage, onClose]);
+
+  useOutsideClick(ref, () => setActiveImage(null));
+
+  if (!floor) return null;
+
+  const handleImageClick = (item: Gallery, index: number) => {
+    setActiveImage({
+      src: item.image,
+      alt: item.title,
+      title: item.title,
+      description: item.description,
+      index
+    });
+  };
+
+  const handlePrevImage = () => {
+    if (activeImage) {
+      const prevIndex = activeImage.index - 1;
+      const prevImage = floor.gallery[prevIndex];
+      if (prevImage) {
+        setActiveImage({
+          src: prevImage.image,
+          alt: prevImage.title,
+          title: prevImage.title,
+          description: prevImage.description,
+          index: prevIndex
+        });
+      }
+    }
+  };
+
+  const handleNextImage = () => {
+    if (activeImage) {
+      const nextIndex = activeImage.index + 1;
+      const nextImage = floor.gallery[nextIndex];
+      if (nextImage) {
+        setActiveImage({
+          src: nextImage.image,
+          alt: nextImage.title,
+          title: nextImage.title,
+          description: nextImage.description,
+          index: nextIndex
+        });
+      }
+    }
+  };
   
     return ( 
+      <>
+      <AnimatePresence>
+        {activeImage && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 h-full w-full z-50"
+            />
+            <GalleryModal
+              activeImage={activeImage}
+              floorGallery={floor.gallery}
+              onClose={() => setActiveImage(null)}
+              onNext={handleNextImage}
+              onPrev={handlePrevImage}
+              modalRef={ref}
+              layoutId={id}
+            />
+          </>
+        )}
+      </AnimatePresence>
+
       <div className="  z-50 flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-2xl max-w-md w-full h-fit overflow-y-auto">
           <div className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h2 className="text-xl font-bold text-gray-800">Floor {floor.number - 1}</h2>
+                <h2 className="text-xl font-bold text-gray-800">Floor {floor.number}</h2>
                 <p>{floor.unitType}</p>
               </div>
               <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -24,51 +129,6 @@ const FloorModal = ({ floor, onClose }: { floor: Floor | null; onClose: () => vo
                 </svg>
               </button>
             </div>
-            {/* {floor.gallery?.length > 0 && (
-//   <Image
-//     src={floor.gallery[0].image}
-//     alt={`floor ${floor.number} layout image`}
-//     width={600}
-//     height={600}
-//     className="h-full w-auto object-cover"
-//   />
-<motion.div
-// layoutId={`floor-${index}-${id}`}
-// key={index}
-className='
-  group                              
-  relative                            
-  flex-none w-[90%] md:w-1/3
-  rounded-xl shadow-md
-  cursor-pointer
-  overflow-hidden
-  bg-gray-100               
-'
-// onClick={() => handleImageClick(item, index)}
-whileHover={{ scale: 1.03, y: -5 }}
-whileTap={{ scale: 0.98 }}
-transition={{ type: "spring", stiffness: 300, damping: 20 }}
->
-<Image
-  src={floor.gallery[0].image}
-  alt={`floor ${floor.number} layout image`}
-  width={320}
-  height={240}
-  className="
-    object-cover w-full h-full rounded-xl
-    transition-transform duration-500 ease-in-out 
-    group-hover:scale-105                       
-  "
-/>
-<div className="
-  absolute inset-0 bg-gradient-to-t from-black/20 to-transparent
-  opacity-0 group-hover:opacity-100
-  transition-opacity duration-300 ease-in-out
-  rounded-xl                                      
-"></div>
-</motion.div>
-)} */}
-
 <div className='grid grid-cols-2 gap-2 '>
    {floor.gallery.map((item, index) => (
                 <motion.div
@@ -81,7 +141,7 @@ transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     cursor-pointer
                     overflow-hidden           
                   '
-                //   onClick={() => handleImageClick(item, index)}
+                  onClick={() => handleImageClick(item, index)}
                   whileHover={{ scale: 1.03, y: -5 }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -92,7 +152,7 @@ transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     width={320}
                     height={240}
                     className="
-                      object-cover w-full h-full rounded-xl
+                      object-cover w-full h-full rounded-md
                       transition-transform duration-500 ease-in-out 
                       group-hover:scale-105                     
                     "
@@ -126,6 +186,7 @@ transition={{ type: "spring", stiffness: 300, damping: 20 }}
           </div>
         </div>
       </div>
+      </>
     )
   }
 

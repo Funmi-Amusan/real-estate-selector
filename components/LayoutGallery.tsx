@@ -2,10 +2,11 @@
 
 import React, { useEffect, useId, useRef, useState } from 'react';
 import Image from "next/image";
-import { Floor, Gallery } from '@/lib/interfaces'; 
+import { Gallery } from '@/lib/interfaces'; 
 import { AnimatePresence, motion } from 'motion/react';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import GalleryModal from './GalleryModal';
+import { useFloorStore } from '@/stores/floor-store';
 
 type ActiveImage = {
   src: string;
@@ -15,10 +16,12 @@ type ActiveImage = {
   description: string;
 } | null;
 
-const LayoutGallery = ({ floor }: { floor: Floor }) => {
+const LayoutGallery = () => {
     const [activeImage, setActiveImage] = useState<ActiveImage>(null);
     const id = useId();
     const ref = useRef<HTMLDivElement>(null);
+
+     const {floor} = useFloorStore();
   
     useEffect(() => {
       function onKeyDown(event: { key: string; }) {

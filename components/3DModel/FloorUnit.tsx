@@ -75,7 +75,6 @@ const FloorUnit = ({
         geometry={mainWallGeometry}
         onClick={(e) => {
           e.stopPropagation()
-          console.log('onFloorClick', floorIndex)
           onFloorClick(floorIndex)
         }}
         onPointerEnter={(e) => {

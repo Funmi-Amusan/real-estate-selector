@@ -1,10 +1,13 @@
 'use client'
 
 import { Floor } from '@/lib/interfaces'
+import { useFloorStore } from '@/stores/floor-store'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 
 const FloorSelect = ({floors}: {floors: Floor[]}) => {
+
+  const {update} = useFloorStore();
 
     const router = useRouter()
     const searchParam = useSearchParams()
@@ -12,6 +15,7 @@ const FloorSelect = ({floors}: {floors: Floor[]}) => {
         const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
         const newUrl = `${currentPath}?floor=${floor.number}`;
         router.push(newUrl);
+        update(floor)
     }
 
   return (

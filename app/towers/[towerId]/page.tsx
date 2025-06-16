@@ -10,20 +10,13 @@ interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const page = ({ params, searchParams }: PageProps) => {
+const page = ({ params }: PageProps) => {
   const tower = towers.find((t) => t.id === params.towerId)
   if (!tower) {
     return <div>Tower not found</div>
   }
 
   const floors = generateFloors(tower.floors)
-const floor: number = searchParams.floor !== undefined ? +searchParams.floor : floors[0].number
-
-const floorGallery = floors.find(f => f.id === `floor-${floor}`);
-
-if (!floorGallery) {
-  return <div>Floor not found</div>;
-}
 
   return (
     <section className='pt-4'>
@@ -52,7 +45,7 @@ if (!floorGallery) {
        </div>
       <InteractiveBuilding floors={floors} />
      </div>
-     <LayoutGallery floor={floorGallery} />
+     <LayoutGallery />
     </section>
   )
 }

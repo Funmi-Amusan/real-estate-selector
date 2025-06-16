@@ -20,19 +20,19 @@ export const generateFloors = (towerFloors: number): Floor[] => {
             id: `gallery-${i + 1}`,
             title: `Floor ${i + 1} Living Room`,
             description: `Explore the stunning views and modern design of Floor ${i + 1}.`,
-            image: '/layout.jpg'
+            image: '/kitchen.jpg'
         },
         {
             id: `gallery-${i + 1}`,
             title: `Floor ${i + 1} Bathroom`,
             description: `Explore the stunning views and modern design of Floor ${i + 1}.`,
-            image: '/layout.jpg'
+            image: '/livingRoom.jpg'
         },
         {
             id: `gallery-${i + 1}`,
             title: `Floor ${i + 1} Kitchen`,
             description: `Explore the stunning views and modern design of Floor ${i + 1}.`,
-            image: '/layout.jpg'
+            image: '/bedroom.jpg'
         },
       ],
     }));
