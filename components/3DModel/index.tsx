@@ -2,7 +2,6 @@
 
 import { Canvas } from "@react-three/fiber"
 import { Suspense, useEffect, useState, useId, useRef } from "react"
-import * as THREE from "three"
 import LoadingScreen from "./LoadingScreen"
 import Scene from "./Scene"
 import FloorModal from './FloorModal'
@@ -39,12 +38,11 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
                 }
             }
         }
-
-        if (activeImage || showFloorModal) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "auto";
-        }
+        if (activeImage) {
+          document.body.style.overflow = "hidden";
+      } else {
+          document.body.style.overflow = "auto";
+      }
 
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
@@ -90,7 +88,6 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
     };
 
     const handlePrevImage = () => {
-      console.log('prev')
         if (activeImage && floor) {
             const prevIndex = activeImage.index - 1;
             const prevImage = floor.gallery[prevIndex];
@@ -107,7 +104,6 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
     };
 
     const handleNextImage = () => {
-      console.log('next image')
         if (activeImage && floor) { 
             const nextIndex = activeImage.index + 1;
             const nextImage = floor.gallery[nextIndex];
@@ -133,16 +129,13 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
 
     return (
         <div className="w-full h-full relative">
+      <div className="absolute -top-5 md:-top-12 left-1/2 transform -translate-x-1/2 w-screen md:w-auto text-black py-2 px-4  z-10">
+        <span className="font-bold text-sm  flex">Interactive Building Viewer - click a floor to explore</span>
+      </div>
             <Canvas
                 shadows
                 camera={{ position: [80, 50, 100], fov: 40 }}
                 className="w-full h-full"
-                gl={{
-                    antialias: true,
-                    shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap },
-                    toneMapping: THREE.ACESFilmicToneMapping,
-                    toneMappingExposure: 1.0,
-                }}
             >
                 <Suspense fallback={<LoadingScreen />}>
                     <Scene
@@ -155,18 +148,19 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
             </Canvas>
 
             <AnimatePresence>
+              <div>
                 {showFloorModal && selectedFloor !== null && (
                     <FloorModal
                         onClose={closeFloorModal}
                         onImageSelect={handleImageSelectFromFloorModal} 
                     />
                 )}
+              </div>
             </AnimatePresence>
             <AnimatePresence>
                 {activeImage && floor && ( 
                     <>
                         <motion.div
-                           
                             className="fixed inset-0 bg-black/80 h-full w-full z-[90]" 
                         />
                         <GalleryModal

@@ -28,7 +28,7 @@ const FloorModal = ({ onClose, onImageSelect }: FloorModalProps) => {
   
     return ( 
       <>
-      <div className=" fixed inset-0 right-0 flex items-center justify-center z-50"> 
+      <div className=" absolute top-0 right-0 w-fit bg-amber-400/30 flex items-center justify-center z-20"> 
         <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full h-fit overflow-y-auto">
           <div className="p-6">
             <div className="flex items-start mb-4">

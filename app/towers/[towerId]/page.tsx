@@ -20,10 +20,10 @@ const page = ({ params }: PageProps) => {
 
   return (
     <section className='pt-4'>
-      <div className=' grid grid-cols-1 md:grid-cols-6 gap-4 p-8'>
-       <div className=' p-4 col-span-2'>
-         <h1 className='text-4xl font-bold'>{tower.name}</h1>
-         <table className='w-full my-6 '>
+      <div className='grid grid-cols-1 md:grid-cols-6 gap-4 p-4 md:p-8'>
+       <div className='p-4 md:p-4 col-span-1 md:col-span-2'>
+         <h1 className='text-3xl md:text-4xl text-center md:text-start'>{tower.name}</h1>
+         <table className='w-full my-6'>
             <tbody>
               <tr className='flex justify-between py-2 border-t'>
                 <td className='font-bold'>Floors</td>
@@ -39,12 +39,10 @@ const page = ({ params }: PageProps) => {
               </tr>
             </tbody>
          </table>
-         {/* <p>{tower?.description}</p> */}
          <FloorSelect floors={floors} />
        </div>
-       <div className='col-span-4'>
-      <InteractiveBuilding floors={floors} />
-
+       <div className='col-span-1 md:col-span-4 min-h-[70vh] md:min-h-auto'>
+         <InteractiveBuilding floors={floors} />
        </div>
      </div>
      <LayoutGallery />

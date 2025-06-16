@@ -5,7 +5,7 @@ export const towers: Tower[] = [
         name: "NeverWood Tower", 
         floors: 15, 
         description: "Premium residential tower with city views. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. ", 
-        img: "/tower1.jpg", 
+        img: "/towerA.jpg", 
         imgLandscape: "/room.jpg",
         location: 'Neverland',
         gallery: [
@@ -39,7 +39,7 @@ export const towers: Tower[] = [
         name: "Everland Tower", 
         floors: 12, 
         description: "Modern apartments with garden views. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. ", 
-        img: "/tower2.jpg", 
+        img: "/towerB.jpg", 
         imgLandscape: "/room.jpg",
         location: 'Evertopia',
         gallery: [
@@ -73,7 +73,7 @@ export const towers: Tower[] = [
         name: "WonderLand Tower", 
         floors: 18, 
         description: "Luxury penthouses and executive suites. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. ", 
-        img: "/tower3.jpg", 
+        img: "/towerC.jpg", 
         imgLandscape: "/room.jpg",
         location: 'Wonder world',
         gallery: [

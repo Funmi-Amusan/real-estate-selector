@@ -7,6 +7,7 @@ import React from 'react'
 
 const FloorSelect = ({floors}: {floors: Floor[]}) => {
 
+
   const {update} = useFloorStore();
 
     const router = useRouter()
@@ -15,12 +16,13 @@ const FloorSelect = ({floors}: {floors: Floor[]}) => {
         const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
         const newUrl = `${currentPath}?floor=${floor.number}`;
         router.push(newUrl);
+
         update(floor)
     }
 
   return (
     <>
-  <h2  className=' text-black font-bold rounded pt-6 pb-2'>
+  <h2  className=' text-black font-bold text-center md:text-start rounded pt-6 pb-2'>
     Explore Floors
   </h2>
 

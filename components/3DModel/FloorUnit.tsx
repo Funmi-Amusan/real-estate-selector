@@ -27,17 +27,32 @@ const FloorUnit = ({
   }) => {
 
     const floorRef = useRef<Mesh>(null)
-  const cornerRadius = 2
-  const mainWallGeometry = useMemo(() => createRoundedRectangleGeometry(width, height, depth, cornerRadius), [])
+  const cornerRadius = 3
+  
+  // Ground floor specific configuration
+  const isGroundFloor = floorIndex === 1
+  const entranceWidth = 8
 
-  const centerWindowWidth = 2.0
-  const sideWindowWidth = 4
+  // Create different geometry based on whether it's ground floor or not
+  const mainWallGeometry = useMemo(() => {
+    if (isGroundFloor) {
+      return createGroundFloorGeometry(width, height, depth, cornerRadius, entranceWidth)
+    } else {
+      return createRoundedRectangleGeometry(width, height, depth, cornerRadius)
+    }
+  }, [isGroundFloor, width, height, depth, cornerRadius, entranceWidth])
+
+  // Window configuration
+  const windowWidth = 2.5
+  const windowHeight = 2.8
+  const windowSpacing = 3.2
+  const windowVerticalOffset = height * 0.2 // Start windows 20% from bottom
 
   // Determine floor color based on state
   const getFloorColor = () => {
     if (isSelected) return "#7fff8c" // Green when selected
     if (isHovered) return "#94e8ff" // Blue when hovered
-    return "#f3f3f3" // Default white
+    return isGroundFloor ? "#e8e8e8" : "#f3f3f3" // Slightly darker for ground floor
   }
 
   function createRoundedRectangleGeometry(width: number, height: number, depth: number, radius: number) {
@@ -65,6 +80,135 @@ const FloorUnit = ({
     geometry.translate(0, height / 2, 0)
   
     return geometry
+  }
+
+  function createGroundFloorGeometry(width: number, height: number, depth: number, radius: number, entranceWidth: number) {
+    // Create the main shape with an opening for the entrance
+    const shape = new THREE.Shape()
+    const x = width / 2
+    const y = depth / 2
+    const entranceHalfWidth = entranceWidth / 2
+  
+    // Start from bottom left, go clockwise but skip the entrance area
+    shape.moveTo(-x + radius, -y)
+    
+    // Bottom edge to entrance start
+    shape.lineTo(entranceHalfWidth, -y)
+    
+    // Skip entrance area - move to entrance end
+    shape.moveTo(-entranceHalfWidth, -y)
+    shape.lineTo(-x + radius, -y)
+    
+    // Left edge
+    shape.quadraticCurveTo(-x, -y, -x, -y + radius)
+    shape.lineTo(-x, y - radius)
+    
+    // Top left corner
+    shape.quadraticCurveTo(-x, y, -x + radius, y)
+    
+    // Top edge
+    shape.lineTo(x - radius, y)
+    
+    // Top right corner
+    shape.quadraticCurveTo(x, y, x, y - radius)
+    
+    // Right edge
+    shape.lineTo(x, -y + radius)
+    
+    // Bottom right corner
+    shape.quadraticCurveTo(x, -y, x - radius, -y)
+    
+    // Bottom edge back to entrance
+    shape.lineTo(entranceHalfWidth, -y)
+
+    // Create holes for the entrance opening
+    const entranceHole = new THREE.Path()
+    entranceHole.moveTo(-entranceHalfWidth, -y)
+    entranceHole.lineTo(entranceHalfWidth, -y)
+    entranceHole.lineTo(entranceHalfWidth, -y + 0.5) // Small depth to create opening
+    entranceHole.lineTo(-entranceHalfWidth, -y + 0.5)
+    entranceHole.lineTo(-entranceHalfWidth, -y)
+    
+    shape.holes.push(entranceHole)
+  
+    const extrudeSettings = {
+      depth: height,
+      bevelEnabled: false,
+    }
+  
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings)
+    geometry.rotateX(Math.PI / 2)
+    geometry.translate(0, height / 2, 0)
+  
+    return geometry
+  }
+
+  // Function to create windows along a wall
+  const createWindowsAlongWall = (wallLength: number, wallPosition: [number, number, number], wallRotation: [number, number, number], isVertical = false, skipCenter = false) => {
+    const windows = []
+    const numWindows = Math.floor(wallLength / windowSpacing)
+    const startOffset = -(numWindows - 1) * windowSpacing / 2
+    
+    for (let i = 0; i < numWindows; i++) {
+      // Skip center windows if entrance is there
+      if (skipCenter && Math.abs(startOffset + i * windowSpacing) < entranceWidth / 2) {
+        continue
+      }
+      
+      const offset = startOffset + i * windowSpacing
+      const windowPos: [number, number, number] = isVertical 
+        ? [wallPosition[0], wallPosition[1] + windowVerticalOffset, wallPosition[2] + offset]
+        : [wallPosition[0] + offset, wallPosition[1] + windowVerticalOffset, wallPosition[2]]
+      
+      windows.push(
+        <group key={`window-${i}`} position={windowPos} rotation={wallRotation}>
+          {/* Window frame */}
+          <mesh position={[0, 0, 0.02]}>
+            <boxGeometry args={[windowWidth + 0.15, windowHeight + 0.15, 0.05]} />
+            <meshStandardMaterial color="#666666" roughness={0.8} />
+          </mesh>
+          {/* Window glass */}
+          <mesh position={[0, 0, 0.05]}>
+            <boxGeometry args={[windowWidth, windowHeight, 0.02]} />
+            <meshStandardMaterial 
+              color="#87ceeb" 
+              transparent 
+              opacity={0.4} 
+              metalness={0.9} 
+              roughness={0.05} 
+            />
+          </mesh>
+          {/* Window divider (cross pattern) */}
+          <mesh position={[0, 0, 0.06]}>
+            <boxGeometry args={[0.08, windowHeight, 0.01]} />
+            <meshStandardMaterial color="#444444" />
+          </mesh>
+          <mesh position={[0, 0, 0.06]}>
+            <boxGeometry args={[windowWidth, 0.08, 0.01]} />
+            <meshStandardMaterial color="#444444" />
+          </mesh>
+        </group>
+      )
+    }
+    return windows
+  }
+
+  // Ground floor entrance components - simplified since the slab is now open
+  const renderGroundFloorEntrance = () => {
+    if (!isGroundFloor) return null
+    
+    return (
+      <>
+      
+        
+        {/* Building name/number above entrance */}
+        {/* <Html position={[0, entranceHeight + 2, depth / 2 + 0.5]} center>
+          <div className="bg-black/80 text-white px-4 py-2 rounded-lg text-lg font-bold pointer-events-none">
+            TOWER {floorIndex}
+          </div>
+        </Html> */}
+      </>
+    )
   }
 
   return (
@@ -136,83 +280,21 @@ const FloorUnit = ({
         floorHeight={height}
       />
 
-      {/* FRONT SIDE WINDOWS */}
-      {/* Central window */}
-      <mesh position={[0, height / 2, depth / 2 + 0.05]}>
-        <boxGeometry args={[centerWindowWidth, height, 0.1]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-      <mesh position={[0, height / 2, depth / 2]}>
-        <boxGeometry args={[centerWindowWidth + 0.2, height, 0.1]} />
-        <meshStandardMaterial color="#94deff" roughness={0.7} />
-      </mesh>
+      {/* WINDOWS */}
+      {/* FRONT WALL WINDOWS (skip center for entrance on ground floor) */}
+      {createWindowsAlongWall(width * 0.8, [0, 0, depth / 2], [0, 0, 0], false, isGroundFloor)}
 
-      {/* Side windows */}
-      <mesh position={[-width / 2 + sideWindowWidth, height / 2, depth / 2 + 0.05]}>
-        <boxGeometry args={[sideWindowWidth, height * 0.7, 0.1]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-      <mesh position={[width / 2 - sideWindowWidth, height / 2, depth / 2 + 0.05]}>
-        <boxGeometry args={[sideWindowWidth, height * 0.7, 0.1]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
+      {/* BACK WALL WINDOWS */}
+      {createWindowsAlongWall(width * 0.8, [0, 0, -depth / 2], [0, Math.PI, 0])}
 
-      {/* BACK SIDE WINDOWS */}
-      <mesh position={[0, height / 2, -depth / 2 - 0.05]}>
-        <boxGeometry args={[centerWindowWidth, height, 0.1]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-      <mesh position={[0, height / 2, -depth / 2]}>
-        <boxGeometry args={[centerWindowWidth + 0.2, height, 0.1]} />
-        <meshStandardMaterial color="#94deff" roughness={0.7} />
-      </mesh>
+      {/* LEFT WALL WINDOWS */}
+      {createWindowsAlongWall(depth * 0.8, [-width / 2, 0, 0], [0, -Math.PI / 2, 0], true)}
 
-      <mesh position={[-width / 2 + sideWindowWidth, height / 2, -depth / 2 - 0.05]}>
-        <boxGeometry args={[sideWindowWidth, height * 0.7, 0.1]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-      <mesh position={[width / 2 - sideWindowWidth, height / 2, -depth / 2 - 0.05]}>
-        <boxGeometry args={[sideWindowWidth, height * 0.7, 0.1]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
+      {/* RIGHT WALL WINDOWS */}
+      {createWindowsAlongWall(depth * 0.8, [width / 2, 0, 0], [0, Math.PI / 2, 0], true)}
 
-      {/* LEFT SIDE WINDOWS */}
-      <mesh position={[-width / 2 - 0.05, height / 2, 0]}>
-        <boxGeometry args={[0.1, height, centerWindowWidth]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-      <mesh position={[-width / 2, height / 2, 0]}>
-        <boxGeometry args={[0.1, height, centerWindowWidth + 0.2]} />
-        <meshStandardMaterial color="#94deff" roughness={0.7} />
-      </mesh>
-
-      <mesh position={[-width / 2 - 0.05, height / 2, -depth / 2 + sideWindowWidth]}>
-        <boxGeometry args={[0.1, height * 0.7, sideWindowWidth]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-      <mesh position={[-width / 2 - 0.05, height / 2, depth / 2 - sideWindowWidth]}>
-        <boxGeometry args={[0.1, height * 0.7, sideWindowWidth]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-
-      {/* RIGHT SIDE WINDOWS */}
-      <mesh position={[width / 2 + 0.05, height / 2, 0]}>
-        <boxGeometry args={[0.1, height, centerWindowWidth]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-      <mesh position={[width / 2, height / 2, 0]}>
-        <boxGeometry args={[0.1, height, centerWindowWidth + 0.2]} />
-        <meshStandardMaterial color="#94deff" roughness={0.7} />
-      </mesh>
-
-      <mesh position={[width / 2 + 0.05, height / 2, -depth / 2 + sideWindowWidth]}>
-        <boxGeometry args={[0.1, height * 0.7, sideWindowWidth]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
-      <mesh position={[width / 2 + 0.05, height / 2, depth / 2 - sideWindowWidth]}>
-        <boxGeometry args={[0.1, height * 0.7, sideWindowWidth]} />
-        <meshStandardMaterial color="#87ceeb" transparent opacity={0.3} metalness={0.9} roughness={0.05} />
-      </mesh>
+      {/* Ground floor entrance */}
+      {renderGroundFloorEntrance()}
     </group>
   )
 }

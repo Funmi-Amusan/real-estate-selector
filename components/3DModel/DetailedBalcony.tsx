@@ -63,7 +63,7 @@ const DetailedBalcony = ({
           </mesh>
     
           {/* Overhang */}
-          <mesh geometry={overhangGeometry} position={[0, floorHeight + floorHeight - 0.2, 0]}>
+          <mesh geometry={overhangGeometry} position={[0, 0, 0]}>
             <meshStandardMaterial color="#696969" />
           </mesh>
     
