@@ -40,10 +40,13 @@ const page = ({ params }: PageProps) => {
               </tr>
             </tbody>
          </table>
-         <p>{tower?.description}</p>
+         {/* <p>{tower?.description}</p> */}
          <FloorSelect floors={floors} />
        </div>
+       <div className='col-span-4'>
       <InteractiveBuilding floors={floors} />
+
+       </div>
      </div>
      <LayoutGallery />
     </section>

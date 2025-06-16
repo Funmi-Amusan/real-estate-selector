@@ -3,19 +3,27 @@
 :root {
   --background: #f4f3ee;
   --foreground: #00000;
+  --blue-500: #24338d;
+
+  --font-noto-sans: "Noto Sans", cursive;
+  --font-inria-serif: "Inria Serif", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-blue-500: var(--blue-500);
+  
+  --font-sans: var(--font-noto-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-inria-serif);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #5e503f;
     --foreground: #eae0d5;
+    --color-primary: #24338d;
   }
 }
 

@@ -9,4 +9,5 @@ interface floorStore {
 export const useFloorStore = create<floorStore>((set) => ({
     floor: null,
     update: (floor) => set(()=> ({floor})),
+    clear: () => set({ floor: null }),
 }));

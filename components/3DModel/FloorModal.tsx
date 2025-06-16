@@ -16,7 +16,7 @@ type ActiveImage = {
   description: string;
 } | null;
 
-const FloorModal = ({ onClose }: {  onClose: () => void }) => {
+const FloorModal = ({ onClose, setShowModal }: {  onClose: () => void; setShowModal: (arg:boolean)=> void }) => {
 
   const [activeImage, setActiveImage] = useState<ActiveImage>(null);
   const id = useId();
@@ -28,6 +28,7 @@ const FloorModal = ({ onClose }: {  onClose: () => void }) => {
     function onKeyDown(event: { key: string; }) {
       if (event.key === "Escape") {
         if (activeImage) {
+          setShowModal(false)
           setActiveImage(null);
         } else {
           onClose();
@@ -115,19 +116,19 @@ const FloorModal = ({ onClose }: {  onClose: () => void }) => {
         )}
       </AnimatePresence>
 
-      <div className="  z-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-2xl max-w-md w-full h-fit overflow-y-auto">
+      <div className=" absolute top-0 md:right-0 z-50 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full h-fit overflow-y-auto">
           <div className="p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h2 className="text-xl font-bold text-gray-800">Floor {floor.number}</h2>
-                <p>{floor.unitType}</p>
-              </div>
+            <div className="flex items-start mb-4">
               <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
+              <div className='flex flex-1 flex-col text-center'>
+                <h2 className="text-xl font-bold text-gray-800">Floor {floor.number}</h2>
+                <p>{floor.unitType}</p>
+              </div>
             </div>
 <div className='grid grid-cols-2 gap-2 '>
    {floor.gallery.map((item, index) => (

@@ -13,84 +13,82 @@ import { useFloorStore } from "@/stores/floor-store"
 export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
 
     const router = useRouter()
-     const {update, floor} = useFloorStore();
+    const {update, floor, clear} = useFloorStore(); // Add clear function
 
-  const [selectedFloor, setSelectedFloor] = useState<number | null>(null)
-  const [hoveredFloor, setHoveredFloor] = useState<number | null>(null)
-  const [showModal, setShowModal] = useState(false)
+    const [selectedFloor, setSelectedFloor] = useState<number | null>(null)
+    const [hoveredFloor, setHoveredFloor] = useState<number | null>(null)
+    const [showModal, setShowModal] = useState(false)
 
-  useEffect(() => {
-    if (floor) {
-        const floorIndex = floors.findIndex(f => f.number === floor.number);
-        if (floorIndex !== -1) {
-            setSelectedFloor(floor.number);
-            setShowModal(true);
+    useEffect(() => {
+        if (floor) {
+            const floorIndex = floors.findIndex(f => f.number === floor.number);
+            if (floorIndex !== -1) {
+                setSelectedFloor(floor.number);
+                setShowModal(true);
+            }
+        } else {
+            setSelectedFloor(null);
+            setShowModal(false);
         }
-    } else {
-        setSelectedFloor(null);
-        setShowModal(false);
-    }
-}, [floor, floors]);
+    }, [floor, floors]);
 
-  const handleFloorClick = (floorIndex: number) => {
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+    const handleFloorClick = (floorIndex: number) => {
+        const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
         const newUrl = `${currentPath}?floor=${floorIndex}`;
         router.push(newUrl);
         const floorData = floors[floorIndex-1]
         update(floorData)
-    setSelectedFloor(floorIndex)
-    setShowModal(true)
-  }
+        setSelectedFloor(floorIndex)
+        setShowModal(true)
+    }
 
-  const closeModal = () => {
-    setShowModal(false)
-    setSelectedFloor(null)
-  }
+    const closeModal = () => {
+        setShowModal(false)
+        setSelectedFloor(null)
+        
+        // Clear the floor from store
+        clear()
+        
+        // Clear URL parameter when closing modal
+        const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+        router.push(currentPath);
+    }
 
-  const handleFloorHover = (floorIndex: number | null) => {
-    setHoveredFloor(floorIndex)
-  }
+    const handleFloorHover = (floorIndex: number | null) => {
+        setHoveredFloor(floorIndex)
+    }
  
-  return (
-    <div className="w-[50vw] flex h-full relative">
-      {/* Header */}
-      {/* <div className="absolute top-6 left-6 z-10">
-        <h1 className="text-3xl font-bold text-white">Interactive Building</h1>
-        <p className="text-sm text-gray-300">Click on any floor to view details</p>
-      </div> */}
+    return (
+        <div className="w-full h-full relative">
+            {/* 3D Canvas */}
+            <Canvas
+                shadows
+                camera={{ position: [80, 50, 100], fov: 40 }}
+                className="w-full h-full"
+                gl={{
+                    antialias: true,
+                    shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap },
+                    toneMapping: THREE.ACESFilmicToneMapping,
+                    toneMappingExposure: 1.0,
+                }}
+            >
+                <Suspense fallback={<LoadingScreen />}>
+                    <Scene 
+                        onFloorClick={handleFloorClick}
+                        onFloorHover={handleFloorHover}
+                        selectedFloor={selectedFloor}
+                        hoveredFloor={hoveredFloor}
+                    />
+                </Suspense>
+            </Canvas>
 
-      {/* Instructions */}
-      {/* <div className="absolute top-6 right-6 z-10 bg-black/60 backdrop-blur-sm p-4 rounded-xl">
-        <p className="text-white text-sm font-medium mb-2">🖱️ Click floors for details</p>
-        <p className="text-gray-300 text-xs">Hover to highlight • Drag to rotate</p>
-      </div> */}
-
-      {/* 3D Canvas */}
-      <Canvas
-        shadows
-        camera={{ position: [80, 50, 100], fov: 40 }}
-        className="w-full h-full"
-        gl={{
-          antialias: true,
-          shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap },
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.0,
-        }}
-      >
-        <Suspense fallback={<LoadingScreen />}>
-          <Scene 
-            onFloorClick={handleFloorClick}
-            onFloorHover={handleFloorHover}
-            selectedFloor={selectedFloor}
-            hoveredFloor={hoveredFloor}
-          />
-        </Suspense>
-      </Canvas>
-
-      {/* Modal rendered outside Canvas */}
-      {showModal && selectedFloor !== null && (
-        <FloorModal floor={floors[selectedFloor]} onClose={closeModal} />
-      )}
-    </div>
-  )
+            {/* Modal rendered outside Canvas */}
+            {showModal && selectedFloor !== null && (
+                <FloorModal 
+                    onClose={closeModal} 
+                    setShowModal={setShowModal}
+                />
+            )}
+        </div>
+    )
 }

@@ -55,7 +55,7 @@ const LayoutGallery = () => {
     const handlePrevImage = () => {
       if (activeImage) {
         const prevIndex = activeImage.index - 1;
-        const prevImage = floor.gallery[prevIndex];
+        const prevImage = floor?.gallery[prevIndex];
         if (prevImage) {
           setActiveImage({
             src: prevImage.image,
@@ -71,7 +71,7 @@ const LayoutGallery = () => {
     const handleNextImage = () => {
       if (activeImage) {
         const nextIndex = activeImage.index + 1;
-        const nextImage = floor.gallery[nextIndex];
+        const nextImage = floor?.gallery[nextIndex];
         if (nextImage) {
           setActiveImage({
             src: nextImage.image,

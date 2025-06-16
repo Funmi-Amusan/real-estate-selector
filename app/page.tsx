@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <section className="h-screen pt-16">
-      <h1 className="text-center font-bold text-2xl md:text-4xl uppercase">Explore Towers</h1>
+      <h1 className="text-center text-2xl md:text-6xl font-serif text-blue-500 uppercase">Explore Towers</h1>
     <div className=" grid md:grid-cols-3 gap-6 py-12 px-8">
     {towers.map((tower) => (
       <TransitionLink

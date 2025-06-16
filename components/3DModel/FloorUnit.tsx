@@ -35,8 +35,8 @@ const FloorUnit = ({
 
   // Determine floor color based on state
   const getFloorColor = () => {
-    if (isSelected) return "#4ade80" // Green when selected
-    if (isHovered) return "#60a5fa" // Blue when hovered
+    if (isSelected) return "#7fff8c" // Green when selected
+    if (isHovered) return "#94e8ff" // Blue when hovered
     return "#f3f3f3" // Default white
   }
 
