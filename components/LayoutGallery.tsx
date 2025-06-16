@@ -8,17 +8,10 @@ import { useOutsideClick } from '@/hooks/useOutsideClick';
 import GalleryModal from './GalleryModal';
 import { useFloorStore } from '@/stores/floor-store';
 import BuildingGallery from './BuildingGallery';
-
-type ActiveImage = {
-  src: string;
-  alt: string;
-  index: number;
-  title: string;
-  description: string;
-} | null;
+import { ActiveImage } from '@/lib/types';
 
 const LayoutGallery = () => {
-    const [activeImage, setActiveImage] = useState<ActiveImage>(null);
+    const [activeImage, setActiveImage] = useState<ActiveImage | null>(null);
     const id = useId();
     const ref = useRef<HTMLDivElement>(null);
 
@@ -98,9 +91,9 @@ const LayoutGallery = () => {
   {activeImage && (
     <>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        // initial={{ opacity: 0 }}
+        // animate={{ opacity: 1 }}
+        // exit={{ opacity: 0 }}
         className="fixed inset-0 bg-black/80 h-full w-full z-10"
       />
       <GalleryModal

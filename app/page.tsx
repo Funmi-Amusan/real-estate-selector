@@ -1,6 +1,6 @@
 import { towers } from "@/lib/data";
-import TransitionLink from "@/lib/TransitionLink";
 import Image from "next/image";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -9,10 +9,10 @@ export default function Home() {
       <h1 className="text-center text-2xl md:text-6xl font-serif text-blue-500 uppercase">Explore Towers</h1>
     <div className=" grid md:grid-cols-3 gap-6 py-12 px-8">
     {towers.map((tower) => (
-      <TransitionLink
+      <Link
         key={tower.id}
         href={`towers/${tower.id}`}
-        // className="cursor-pointer transition-all duration-300 hover:scale-105"
+        className="cursor-pointer transition-all duration-300 hover:scale-105"
       >
      <div className="overflow-hidden">
   <Image 
@@ -24,7 +24,7 @@ export default function Home() {
   />
 </div>
      <p className="flex items-center uppercase font-semibold text-base">{tower.name} </p>
-      </TransitionLink>
+      </Link>
     ))}
   </div>
     </section>

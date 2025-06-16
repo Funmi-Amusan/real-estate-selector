@@ -1,66 +1,138 @@
 "use client"
 
 import { Canvas } from "@react-three/fiber"
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useEffect, useState, useId, useRef } from "react"
 import * as THREE from "three"
 import LoadingScreen from "./LoadingScreen"
 import Scene from "./Scene"
 import FloorModal from './FloorModal'
-import { Floor } from "@/lib/interfaces"
+import { Floor, Gallery } from "@/lib/interfaces" 
 import { useRouter } from "next/navigation"
 import { useFloorStore } from "@/stores/floor-store"
+import { AnimatePresence, motion } from "framer-motion" 
+import { useOutsideClick } from "@/hooks/useOutsideClick"; 
+import GalleryModal from "../GalleryModal"
+import { ActiveImage } from "@/lib/types"
 
 export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
 
     const router = useRouter()
-    const {update, floor, clear} = useFloorStore(); // Add clear function
+    const {update, floor, clear} = useFloorStore();
 
     const [selectedFloor, setSelectedFloor] = useState<number | null>(null)
     const [hoveredFloor, setHoveredFloor] = useState<number | null>(null)
-    const [showModal, setShowModal] = useState(false)
+    const [showFloorModal, setShowFloorModal] = useState(false) 
+    const [activeImage, setActiveImage] = useState<ActiveImage| null>(null);
+    const galleryModalId = useId(); 
+    const galleryModalRef = useRef<HTMLDivElement>(null);
+    useOutsideClick(galleryModalRef, () => {
+        setActiveImage(null);
+    });
+    useEffect(() => {
+        function onKeyDown(event: { key: string; }) {
+            if (event.key === "Escape") {
+                if (activeImage) {
+                    setActiveImage(null);
+                } else if (showFloorModal) {
+                    setShowFloorModal(false); 
+                  clear()
+                }
+            }
+        }
+
+        if (activeImage || showFloorModal) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [activeImage, clear, showFloorModal, update]);
+
 
     useEffect(() => {
         if (floor) {
             const floorIndex = floors.findIndex(f => f.number === floor.number);
             if (floorIndex !== -1) {
                 setSelectedFloor(floor.number);
-                setShowModal(true);
+                setShowFloorModal(true); 
             }
         } else {
             setSelectedFloor(null);
-            setShowModal(false);
+            setShowFloorModal(false);
         }
     }, [floor, floors]);
 
     const handleFloorClick = (floorIndex: number) => {
         const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
         const newUrl = `${currentPath}?floor=${floorIndex}`;
-        router.push(newUrl);
+        router.push(newUrl); 
         const floorData = floors[floorIndex-1]
-        update(floorData)
+        update(floorData) 
         setSelectedFloor(floorIndex)
-        setShowModal(true)
+        setShowFloorModal(true) 
     }
 
-    const closeModal = () => {
-        setShowModal(false)
-        setSelectedFloor(null)
-        
-        // Clear the floor from store
-        clear()
-        
-        // Clear URL parameter when closing modal
-        const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
-        router.push(currentPath);
+    const closeFloorModal = () => {
+        setShowFloorModal(false)
     }
+
+    const handleImageSelectFromFloorModal = (item: Gallery, index: number) => {
+        setShowFloorModal(false);
+        setActiveImage({ 
+            src: item.image,
+            alt: item.title,
+            title: item.title,
+            description: item.description,
+            index
+        });
+    };
+
+    const handlePrevImage = () => {
+      console.log('prev')
+        if (activeImage && floor) {
+            const prevIndex = activeImage.index - 1;
+            const prevImage = floor.gallery[prevIndex];
+            if (prevImage) {
+                setActiveImage({
+                    src: prevImage.image,
+                    alt: prevImage.title,
+                    title: prevImage.title,
+                    description: prevImage.description,
+                    index: prevIndex
+                });
+            }
+        }
+    };
+
+    const handleNextImage = () => {
+      console.log('next image')
+        if (activeImage && floor) { 
+            const nextIndex = activeImage.index + 1;
+            const nextImage = floor.gallery[nextIndex];
+            if (nextImage) {
+                setActiveImage({
+                    src: nextImage.image,
+                    alt: nextImage.title,
+                    title: nextImage.title,
+                    description: nextImage.description,
+                    index: nextIndex
+                });
+            }
+        }
+    };
+
+    const closeGalleryModal = () => {
+        setActiveImage(null);
+    };
 
     const handleFloorHover = (floorIndex: number | null) => {
         setHoveredFloor(floorIndex)
     }
- 
+
     return (
         <div className="w-full h-full relative">
-            {/* 3D Canvas */}
             <Canvas
                 shadows
                 camera={{ position: [80, 50, 100], fov: 40 }}
@@ -73,7 +145,7 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
                 }}
             >
                 <Suspense fallback={<LoadingScreen />}>
-                    <Scene 
+                    <Scene
                         onFloorClick={handleFloorClick}
                         onFloorHover={handleFloorHover}
                         selectedFloor={selectedFloor}
@@ -82,13 +154,33 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
                 </Suspense>
             </Canvas>
 
-            {/* Modal rendered outside Canvas */}
-            {showModal && selectedFloor !== null && (
-                <FloorModal 
-                    onClose={closeModal} 
-                    setShowModal={setShowModal}
-                />
-            )}
+            <AnimatePresence>
+                {showFloorModal && selectedFloor !== null && (
+                    <FloorModal
+                        onClose={closeFloorModal}
+                        onImageSelect={handleImageSelectFromFloorModal} 
+                    />
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {activeImage && floor && ( 
+                    <>
+                        <motion.div
+                           
+                            className="fixed inset-0 bg-black/80 h-full w-full z-[90]" 
+                        />
+                        <GalleryModal
+                            activeImage={activeImage}
+                            floorGallery={floor.gallery} 
+                            onClose={closeGalleryModal}
+                            onNext={handleNextImage}
+                            onPrev={handlePrevImage}
+                            modalRef={galleryModalRef}
+                            layoutId={galleryModalId}
+                        />
+                    </>
+                )}
+            </AnimatePresence>
         </div>
     )
 }

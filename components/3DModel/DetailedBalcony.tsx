@@ -5,8 +5,6 @@ import * as THREE from "three"
 const DetailedBalcony = ({
     position,
     rotation,
-    // width,
-    // depth,
     floorHeight,
   }: {
     position: [number, number, number]
@@ -15,7 +13,6 @@ const DetailedBalcony = ({
     depth: number
     floorHeight: number
   }) => {
-
 
     const balconyGroup = useRef<Group>(null)
     const railingHeight = 1.0

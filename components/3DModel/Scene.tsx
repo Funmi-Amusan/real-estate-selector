@@ -2,13 +2,7 @@ import React, { useRef } from 'react'
 import BuildingModel from './BuildingModel'
 import { OrbitControls } from '@react-three/drei'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
-
-interface SceneProps {
-  onFloorClick: (floorIndex: number) => void
-  onFloorHover: (floorIndex: number | null) => void
-  selectedFloor: number | null
-  hoveredFloor: number | null
-}
+import { SceneProps } from '@/lib/interfaces'
 
 const Scene: React.FC<SceneProps> = ({
   onFloorClick,
@@ -21,7 +15,7 @@ const Scene: React.FC<SceneProps> = ({
 
   return (
     <>
-      {/* ... your lighting setup ... */}
+      {/* ...  lighting setup ... */}
       <ambientLight intensity={0.6} />
       <directionalLight
         position={[100, 150, 80]}

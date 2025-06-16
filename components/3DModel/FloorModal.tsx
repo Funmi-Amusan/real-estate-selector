@@ -1,122 +1,34 @@
 'use client'
 
 import Image from 'next/image';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'framer-motion'; 
 import { useFloorStore } from '@/stores/floor-store';
-import { useEffect, useId, useRef, useState } from 'react';
-import { Gallery } from '@/lib/interfaces';
-import { useOutsideClick } from '@/hooks/useOutsideClick';
-import GalleryModal from '../GalleryModal';
+import { useEffect } from 'react'; 
+import { FloorModalProps, Gallery } from '@/lib/interfaces';
 
-type ActiveImage = {
-  src: string;
-  alt: string;
-  index: number;
-  title: string;
-  description: string;
-} | null;
 
-const FloorModal = ({ onClose, setShowModal }: {  onClose: () => void; setShowModal: (arg:boolean)=> void }) => {
-
-  const [activeImage, setActiveImage] = useState<ActiveImage>(null);
-  const id = useId();
-  const ref = useRef<HTMLDivElement>(null);
-  
+const FloorModal = ({ onClose, onImageSelect }: FloorModalProps) => { 
   const { floor } = useFloorStore();
 
   useEffect(() => {
     function onKeyDown(event: { key: string; }) {
       if (event.key === "Escape") {
-        if (activeImage) {
-          setShowModal(false)
-          setActiveImage(null);
-        } else {
-          onClose();
-        }
+        onClose(); 
       }
     }
-
-    if (activeImage) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeImage, onClose]);
-
-  useOutsideClick(ref, () => setActiveImage(null));
+  }, [onClose]); 
 
   if (!floor) return null;
 
   const handleImageClick = (item: Gallery, index: number) => {
-    setActiveImage({
-      src: item.image,
-      alt: item.title,
-      title: item.title,
-      description: item.description,
-      index
-    });
-  };
-
-  const handlePrevImage = () => {
-    if (activeImage) {
-      const prevIndex = activeImage.index - 1;
-      const prevImage = floor.gallery[prevIndex];
-      if (prevImage) {
-        setActiveImage({
-          src: prevImage.image,
-          alt: prevImage.title,
-          title: prevImage.title,
-          description: prevImage.description,
-          index: prevIndex
-        });
-      }
-    }
-  };
-
-  const handleNextImage = () => {
-    if (activeImage) {
-      const nextIndex = activeImage.index + 1;
-      const nextImage = floor.gallery[nextIndex];
-      if (nextImage) {
-        setActiveImage({
-          src: nextImage.image,
-          alt: nextImage.title,
-          title: nextImage.title,
-          description: nextImage.description,
-          index: nextIndex
-        });
-      }
-    }
+    onImageSelect(item, index); 
   };
   
     return ( 
       <>
-      <AnimatePresence>
-        {activeImage && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 h-full w-full z-50"
-            />
-            <GalleryModal
-              activeImage={activeImage}
-              floorGallery={floor.gallery}
-              onClose={() => setActiveImage(null)}
-              onNext={handleNextImage}
-              onPrev={handlePrevImage}
-              modalRef={ref}
-              layoutId={id}
-            />
-          </>
-        )}
-      </AnimatePresence>
-
-      <div className=" absolute top-0 md:right-0 z-50 flex items-center justify-center">
+      <div className=" fixed inset-0 right-0 flex items-center justify-center z-50"> 
         <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full h-fit overflow-y-auto">
           <div className="p-6">
             <div className="flex items-start mb-4">
@@ -130,11 +42,11 @@ const FloorModal = ({ onClose, setShowModal }: {  onClose: () => void; setShowMo
                 <p>{floor.unitType}</p>
               </div>
             </div>
-<div className='grid grid-cols-2 gap-2 '>
-   {floor.gallery.map((item, index) => (
+            <div className='grid grid-cols-2 gap-2 '>
+               {floor.gallery.map((item, index) => (
                 <motion.div
-                  layoutId={`image-${index}`}
-                  key={index}
+                  layoutId={`floor-thumbnail-${item.image}`} 
+                  key={item.image} 
                   className='
                     group                              
                     relative                            
@@ -162,15 +74,14 @@ const FloorModal = ({ onClose, setShowModal }: {  onClose: () => void; setShowMo
                     absolute inset-0 bg-black/20
                     opacity-0 group-hover:opacity-100
                     transition-opacity duration-300 ease-in-out
-                                        
                   "></div>
                   
                 </motion.div>
               ))}
 
-</div>
-  
-            <div className="space-y-4">
+            </div>
+              
+            <div className="space-y-4 mt-4"> 
               <div className="grid grid-cols-2 gap-4">
                 <div className=" p-1 rounded-lg flex items-center gap-2">
                   <p className="text-sm text-gray-600">Rooms</p>
@@ -181,8 +92,6 @@ const FloorModal = ({ onClose, setShowModal }: {  onClose: () => void; setShowMo
                   <p className="text-base font-semibold text-gray-800">{floor.area}m²</p>
                 </div>
               </div>
-  
-            
             </div>
           </div>
         </div>
