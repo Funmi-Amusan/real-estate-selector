@@ -12,25 +12,25 @@ export const towers: Tower[] = [
             {
                 id: `gallery-1`,
                 title: `NeverWood Tower Lobby`,
-                description: `Explore the stunning views and modern design of NeverWood Tower.`,
+                description: `A grand entrance with sleek modern design, warm lighting, and inviting decor that sets the tone for luxury.`,
                 image: '/lobby.jpg'
             },
             {
                 id: `gallery-2`,
                 title: `NeverWood Tower Balcony`,
-                description: `Explore the stunning views and modern design of NeverWood Tower.`,
+                description: `Breathtaking cityscape views paired with elegant railing and comfortable seating—a perfect spot to unwind.`,
                 image: '/balcony.jpg'
             },
             {
                 id: `gallery-3`,
                 title: `NeverWood Tower poolside`,
-                description: `Explore the stunning views and modern design of NeverWood Tower.`,
+                description: `Crystal-clear waters, stylish loungers, and a serene atmosphere make this a dreamy escape in the heart of the tower.`,
                 image: '/poolside.jpg'
             },
             {
                 id: `gallery-4`,
                 title: `NeverWood Tower Gym`,
-                description: `Explore the stunning views and modern design of NeverWood Tower.`,
+                description: `State-of-the-art equipment in a spacious, well-lit environment designed for peak performance and motivation.`,
                 image: '/gym.jpg'
             },
           ],
