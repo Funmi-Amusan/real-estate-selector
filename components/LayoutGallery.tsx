@@ -7,8 +7,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import GalleryModal from './GalleryModal';
 import { useFloorStore } from '@/stores/floor-store';
-import BuildingGallery from './BuildingGallery';
 import { ActiveImage } from '@/lib/types';
+
 
 const LayoutGallery = () => {
     const [activeImage, setActiveImage] = useState<ActiveImage | null>(null);
@@ -16,6 +16,11 @@ const LayoutGallery = () => {
     const ref = useRef<HTMLDivElement>(null);
 
      const {floor} = useFloorStore();
+     const [isHydrated, setIsHydrated] = useState(false);
+
+     useEffect(() => {
+         setIsHydrated(true);
+     }, []);
   
     useEffect(() => {
       function onKeyDown(event: { key: string; }) {
@@ -78,9 +83,15 @@ const LayoutGallery = () => {
       }
     };
 
+    if (!isHydrated) {
+      return <div>Loading...</div>; 
+    }
+
+
+
     if (!floor) {
       return (
-       <BuildingGallery />
+      <div>Floor not found</div>
       );
     }
   
@@ -90,10 +101,7 @@ const LayoutGallery = () => {
        <AnimatePresence>
   {activeImage && (
     <>
-      <motion.div
-        // initial={{ opacity: 0 }}
-        // animate={{ opacity: 1 }}
-        // exit={{ opacity: 0 }}
+      <div
         className="fixed inset-0 bg-black/80 h-full w-full z-10"
       />
       <GalleryModal
@@ -112,9 +120,9 @@ const LayoutGallery = () => {
           <motion.h2 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className='text-3xl font-bold mb-6 text-center uppercase text-gray-800'
+            className='text-3xl font-bold mb-6 text-center uppercase text-foreground'
           >
-            Floor {floor.number}
+         {floor.number === 0 ? 'Ground Floor' : `Floor ${floor.number}`}
           </motion.h2>
           
           <motion.div 
@@ -124,7 +132,7 @@ const LayoutGallery = () => {
             className='flex justify-center gap-4 mb-8 flex-wrap'
           >
             <div className='px-4  py-2 rounded-full text-foreground text-sm font-bold'>
-              Area: <span className='font-medium'>{floor.area} sqft</span>
+              Area: <span className='font-medium'>{floor.area} m²</span>
             </div>
             <div className='px-4 py-2 rounded-full bg-background text-foreground text-sm font-bold'>
               Unit Type: <span className='font-medium'>{floor.unitType}</span>
@@ -172,7 +180,7 @@ const LayoutGallery = () => {
                     "
                   />
                   <div className="
-                    absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent
+                    absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent
                     opacity-0 group-hover:opacity-100
                     transition-opacity duration-300 ease-in-out
                     rounded-xl                                      

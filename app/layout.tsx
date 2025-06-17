@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Noto_Sans, Lustria } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 const notoSans = Noto_Sans({
   variable: "--font-noto-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

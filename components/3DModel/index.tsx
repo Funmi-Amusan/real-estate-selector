@@ -34,7 +34,6 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
                     setActiveImage(null);
                 } else if (showFloorModal) {
                     setShowFloorModal(false); 
-                  clear()
                 }
             }
         }
@@ -66,7 +65,7 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
         const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
         const newUrl = `${currentPath}?floor=${floorIndex}`;
         router.push(newUrl); 
-        const floorData = floors[floorIndex-1]
+        const floorData = floors[floorIndex]
         update(floorData) 
         setSelectedFloor(floorIndex)
         setShowFloorModal(true) 
@@ -134,7 +133,7 @@ export default function InteractiveBuilding({floors}: {floors: Floor[]}) {
       </div>
             <Canvas
                 shadows
-                camera={{ position: [80, 50, 100], fov: 40 }}
+                camera={{ position: [80, 50, 100], fov: 45 }}
                 className="w-full h-full"
             >
                 <Suspense fallback={<LoadingScreen />}>

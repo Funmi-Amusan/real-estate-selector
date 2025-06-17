@@ -25,10 +25,9 @@ const FloorModal = ({ onClose, onImageSelect }: FloorModalProps) => {
   const handleImageClick = (item: Gallery, index: number) => {
     onImageSelect(item, index); 
   };
-  
     return ( 
       <>
-      <div className=" absolute top-0 right-0 w-fit bg-amber-400/30 flex items-center justify-center z-20"> 
+      <div className=" absolute top-0 right-0 w-fit flex items-center justify-center z-20"> 
         <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full h-fit overflow-y-auto">
           <div className="p-6">
             <div className="flex items-start mb-4">
@@ -38,7 +37,7 @@ const FloorModal = ({ onClose, onImageSelect }: FloorModalProps) => {
                 </svg>
               </button>
               <div className='flex flex-1 flex-col text-center'>
-                <h2 className="text-xl font-bold text-gray-800">Floor {floor.number}</h2>
+                <h2 className="text-xl font-bold text-gray-800">{floor.number === 0 ? 'Ground Floor' : `Floor ${floor.number}`}</h2>
                 <p>{floor.unitType}</p>
               </div>
             </div>
@@ -71,7 +70,7 @@ const FloorModal = ({ onClose, onImageSelect }: FloorModalProps) => {
                     "
                   />
                   <div className="
-                    absolute inset-0 bg-black/20
+                    absolute inset-0 bg-black/30
                     opacity-0 group-hover:opacity-100
                     transition-opacity duration-300 ease-in-out
                   "></div>
@@ -81,13 +80,13 @@ const FloorModal = ({ onClose, onImageSelect }: FloorModalProps) => {
 
             </div>
               
-            <div className="space-y-4 mt-4"> 
+            <div className="space-y-4 mt-4 border-t border-black/10"> 
               <div className="grid grid-cols-2 gap-4">
-                <div className=" p-1 rounded-lg flex items-center gap-2">
-                  <p className="text-sm text-gray-600">Rooms</p>
+                <div className=" p-1 rounded-lg flex justify-center items-center gap-2">
+                  <p className="text-sm text-gray-600">Units</p>
                   <p className="text-base font-semibold text-gray-800">{floor.rooms}</p>
                 </div>
-                <div className=" p-1 rounded-lg flex items-center gap-2">
+                <div className=" p-1 rounded-lg flex justify-center items-center gap-2">
                   <p className="text-sm text-gray-600"> Area</p>
                   <p className="text-base font-semibold text-gray-800">{floor.area}m²</p>
                 </div>

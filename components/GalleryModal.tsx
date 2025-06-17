@@ -26,7 +26,7 @@ const GalleryModal = ({
         className="flex absolute top-4 right-4 items-center justify-center rounded-full z-10 "
         onClick={onClose}
       >
-     <IoCloseCircleSharp className='text-white text-2xl hover:text-white/70' />
+     <IoCloseCircleSharp className='text-white text-5xl hover:text-white/70' />
       </motion.button>
 
       {activeImage.index > 0 && floorGallery[activeImage.index - 1] && (
@@ -61,7 +61,7 @@ const GalleryModal = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="absolute bottom-4 text-center bg-gradient-to-t from-black/40 to-transparent w-[calc(100%-2rem)] pb-4 pt-8"
+              className="absolute bottom-4 text-center bg-gradient-to-t from-black/60 to-transparent w-[calc(100%-2rem)] pb-4 pt-8"
             >
               <h3 className="font-semibold text-lg mb-1 text-white">
                 {activeImage.title}

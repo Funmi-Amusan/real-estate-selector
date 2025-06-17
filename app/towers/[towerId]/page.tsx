@@ -19,7 +19,7 @@ const page = ({ params }: PageProps) => {
   const floors = generateFloors(tower.floors)
 
   return (
-    <section className='pt-4'>
+    <section className='pt-16 md:pt-4'>
       <div className='grid grid-cols-1 md:grid-cols-6 gap-4 p-4 md:p-8'>
        <div className='p-4 md:p-4 col-span-1 md:col-span-2'>
          <h1 className='text-3xl md:text-4xl text-center md:text-start'>{tower.name}</h1>
@@ -41,7 +41,7 @@ const page = ({ params }: PageProps) => {
          </table>
          <FloorSelect floors={floors} />
        </div>
-       <div className='col-span-1 md:col-span-4 min-h-[70vh] md:min-h-auto'>
+       <div className='col-span-1  md:col-span-4 min-h-[70vh] md:min-h-auto'>
          <InteractiveBuilding floors={floors} />
        </div>
      </div>

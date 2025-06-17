@@ -1,14 +1,24 @@
-import { Floor } from '@/lib/interfaces';
-import {create} from 'zustand'
+// stores/floor-store.ts
 
-interface floorStore {
+import { Floor } from '@/lib/interfaces';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface FloorStore {
     floor: Floor | null;
     update: (floor: Floor) => void;
-    clear: () => void
+    clear: () => void;
 }
 
-export const useFloorStore = create<floorStore>((set) => ({
-    floor: null,
-    update: (floor) => set(()=> ({floor})),
-    clear: () => set({ floor: null }),
-}));
+export const useFloorStore = create<FloorStore>()(
+    persist(
+        (set) => ({
+            floor: null,
+            update: (floor) => set({ floor }),
+            clear: () => set({ floor: null }),
+        }),
+        {
+            name: 'floor-storage', 
+        }
+    )
+);
