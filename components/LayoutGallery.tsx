@@ -87,8 +87,6 @@ const LayoutGallery = () => {
       return <div>Loading...</div>; 
     }
 
-
-
     if (!floor) {
       return (
       <div>Floor not found</div>

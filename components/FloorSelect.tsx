@@ -13,16 +13,19 @@ const FloorSelect = ({ floors }: { floors: Floor[] }) => {
 
   useEffect(() => {
     const floorParam = searchParams.get('floor');
-    
     if (floorParam) {
       const selectedFloor = floors.find(f => f.number === +floorParam);
       if (selectedFloor) {
         update(selectedFloor);
       } else {
+        
         clear();
       }
     } else {
-      clear();
+      const defaultFloor = floors.find(f => f.number === 0);
+      if (defaultFloor) {
+        update(defaultFloor);
+      }
     }
   }, [searchParams, floors, update, clear]); 
 
